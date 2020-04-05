@@ -66,7 +66,8 @@ class ECGA (PMBGA) :
         while self.candidates :
             m = 0
             k = None
-            for c in self.candidates.keys () :
+            keys = tuple (self.candidates.keys ())
+            for c in keys :
                 c1, c2 = self.candidates [c]
                 d = self.mpm (c1) + self.mpm (c2) - self.mpm (c)
                 if d > 0 :
@@ -79,7 +80,8 @@ class ECGA (PMBGA) :
                 c1, c2 = self.candidates [k]
                 self.delete (c1)
                 self.delete (c2)
-                for c in self.candidates.keys () :
+                keys = tuple (self.candidates.keys ())
+                for c in keys :
                     if c1 in self.candidates [c] or c2 in self.candidates [c] :
                         self.delete (c)
                 for p in self.partitions :
@@ -91,9 +93,8 @@ class ECGA (PMBGA) :
     # end def build_model
 
     def delete (self, partition) :
-        if partition in self._ecache :
-            del self._ecache [partition]
-            del self._scache [partition]
+        if partition in self._mpm_cache :
+            del self._mpm_cache [partition]
         if partition in self.candidates :
             del self.candidates [partition]
         if partition in self.partitions :
@@ -101,40 +102,36 @@ class ECGA (PMBGA) :
     # end def delete
 
     def mpm (self, partition) :
-        e = self.entropy   (partition)
-        s = self.repr_size (partition)
-        return e + s
+        if partition not in self._mpm_cache :
+            e = self.entropy   (partition)
+            s = self.repr_size (partition)
+            self._mpm_cache [partition] = e + s
+        return self._mpm_cache [partition]
     # end def mpm
 
     def entropy (self, partition) :
-        if partition not in self._ecache :
-            d = {}
-            for g in self.genes :
-                key = []
-                for k in partition :
-                    key.append (g [k])
-                key = tuple (key)
-                if key not in d :
-                    d [key] = 0.0
-                d [key] += 1
-            l = len (self.genes)
-            p = [d [k] / l for k in d]
-            self._ecache [partition] = \
-                sum (-pk * log (pk) / log2 for pk in p) * len (self.genes)
-        return self._ecache [partition]
+        d = {}
+        for g in self.genes :
+            key = []
+            for k in partition :
+                key.append (g [k])
+            key = tuple (key)
+            if key not in d :
+                d [key] = 0.0
+            d [key] += 1
+        l = len (self.genes)
+        p = [d [k] / l for k in d]
+        return sum (-pk * log (pk) / log2 for pk in p) * len (self.genes)
     # end def entropy
 
     def repr_size (self, partition) :
-        if partition not in self._scache :
-            self._scache [partition] = \
-                (2.0 ** len (partition) - 1.0) * self.log2n1
-        return self._scache [partition]
+        return (2.0 ** len (partition) - 1.0) * self.log2n1
     # end def repr_size
 
     def post_init (self) :
         self.__super.post_init ()
         self.log2n1  = log (len (self) + 1) / log2
-        self._ecache = {}
+        self._mpm_cache = {}
         self._scache = {}
     # end def post_init
 # end class ECGA
