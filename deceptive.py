@@ -3,8 +3,9 @@ from pga import PGA, PGA_STOP_MAXITER, PGA_REPORT_STRING, PGA_POPREPL_RTR
 from pga import PGA_OLDPOP
 from rsclib.autosuper import autosuper
 from argparse import ArgumentParser
+from ecga import ECGA
 
-class Deceptive (PGA, autosuper) :
+class Deceptive (ECGA, autosuper) :
 
     fun = ((3, 1),)
     def __init__ \
@@ -22,9 +23,8 @@ class Deceptive (PGA, autosuper) :
         length  = 0
         for k, n in self.fun :
             length += k * n
-        PGA.__init__ \
+        ECGA.__init__ \
             ( self
-            , bool
             , length
             , maximize            = True
             , pop_size            = popsize
@@ -101,7 +101,7 @@ def main () :
         ( '-p', '--popsize'
         , type    = int
         , help    = "Population size, default=%(default)s"
-        , default = 200
+        , default = 1000
         )
     cmd.add_argument \
         ( '-s', '--shuffle'
