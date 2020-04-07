@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import sys
 from pga import PGA, PGA_STOP_MAXITER, PGA_STOP_NOCHANGE, PGA_REPORT_STRING, \
                 PGA_POPREPL_RTR
 from rsclib.autosuper import autosuper
@@ -36,8 +37,8 @@ class SGA (PGA, autosuper) :
             , print_frequency     = print_frequency
             , max_GA_iter         = max_GA_iter
             , mutation_prob       = mutation_prob
+            , crossover_prob      = 1.0
             )
-        self.string_length   = length
         self.post_init ()
     # end def __init__
 
@@ -56,30 +57,43 @@ class PMBGA (SGA) :
     def post_init (self) :
         self.crossover_count = 0
         self.parents  = []
-        self.children = []
         self.last_gen = self.get_iteration ()
+        self.file     = sys.stdout
     # end def post_init
 
     def crossover (self, p1, p2, p_pop, c1, c2, c_pop) :
         """ Perform crossover from p1, p2 into c1, c2.
             Note that we do not actually perform crossover. We build a
-            model from all the parents and store the children indexes.
-            Then we sample the model to produce the children. This
-            function is called self.pop_size / 2 times.
+            model from all the parents. Then we sample the model to
+            produce the children. This function is called
+            self.pop_size / 2 times.
+            Note: For this to work the crossover probability must be 1.0
         """
-        assert self.crossover_count < len (self)
-        self.children.append (c1)
-        self.children.append (c2)
+        assert self.crossover_count < self.pop_size
+        assert self.get_iteration () == self.last_gen
         self.parents.append (p1)
         self.parents.append (p2)
         self.crossover_count += 2
-        if self.crossover_count == len (self) :
+        if self.crossover_count == self.pop_size :
+            print ("Reached: %s" % self.pop_size)
+            assert (self.get_iteration () == self.last_gen)
+            print (self.get_iteration ())
+            sys.stdout.flush ()
             self.build_model  (p_pop)
-            self.sample_model (c_pop)
+            self.sample_model (c1, c2, c_pop)
             self.crossover_count = 0
             self.parents  = []
-            self.children = []
-            self.last_gen = self.get_iteration ()
+            self.children = {}
+            self.last_gen += 1
     # end def crossover
+
+    def print_string (self, file, p, pop) :
+        f = self.file
+        self.file = file
+        self.print_model ()
+        self.file.flush ()
+        self.__super.print_string (file, p, pop)
+        self.file = f
+    # end def print_string
 
 # end def PMBGA
