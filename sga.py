@@ -54,6 +54,10 @@ class PMBGA (SGA) :
         building / sampling into the framework of PGApy.
     """
 
+    def clear_cache (self) :
+        pass
+    # end def clear_cache
+
     def post_init (self) :
         self.crossover_count = 0
         self.parents  = []
@@ -75,7 +79,6 @@ class PMBGA (SGA) :
         self.parents.append (p2)
         self.crossover_count += 2
         if self.crossover_count == self.pop_size :
-            print ("Reached: %s" % self.pop_size)
             assert (self.get_iteration () == self.last_gen)
             print (self.get_iteration ())
             sys.stdout.flush ()
@@ -85,6 +88,7 @@ class PMBGA (SGA) :
             self.parents  = []
             self.children = {}
             self.last_gen += 1
+            self.clear_cache ()
     # end def crossover
 
     def print_string (self, file, p, pop) :

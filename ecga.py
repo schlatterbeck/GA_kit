@@ -91,6 +91,11 @@ class ECGA (PMBGA) :
                 assert not self.candidates
     # end def build_model
 
+    def clear_cache (self) :
+        self._mpm_cache    = {}
+        self._probab_cache = {}
+    # end def clear_cache
+
     def delete (self, partition) :
         if partition in self._mpm_cache :
             del self._mpm_cache [partition]
@@ -157,9 +162,7 @@ class ECGA (PMBGA) :
     def post_init (self) :
         self.__super.post_init ()
         self.log2n1  = log (len (self) + 1) / log2
-        self._mpm_cache = {}
-        self._probab_cache = {}
-        self._scache = {}
+        self.clear_cache ()
     # end def post_init
 
     def print_model (self) :
