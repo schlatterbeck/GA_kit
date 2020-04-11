@@ -1,11 +1,8 @@
 #!/usr/bin/python3
 
+from __future__ import print_function
 from math import log
-from pga import PGA, PGA_STOP_MAXITER, PGA_STOP_NOCHANGE, PGA_REPORT_STRING, \
-                PGA_POPREPL_RTR
-from sga import PMBGA
-
-log2 = log (2)
+from sga import PMBGA, log2
 
 class ECGA (PMBGA) :
     """ Extended Compacat Genetic Algorithm
@@ -85,7 +82,7 @@ class ECGA (PMBGA) :
             d [k] = d [k] / l
             p.append (d [k])
         self._probab_cache [partition] = d
-        return sum (-pk * log (pk) / log2 for pk in p) * len (self.genes)
+        return sum (-pk * log2 (pk) for pk in p) * len (self.genes)
     # end def entropy
 
     def mpm (self, partition) :
@@ -123,7 +120,7 @@ class ECGA (PMBGA) :
 
     def post_init (self) :
         self.__super.post_init ()
-        self.log2n1  = log (len (self) + 1) / log2
+        self.log2n1  = log2 (len (self) + 1)
         self.clear_cache ()
     # end def post_init
 

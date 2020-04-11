@@ -1,9 +1,14 @@
 #!/usr/bin/python3
 
 import sys
-from pga import PGA, PGA_STOP_MAXITER, PGA_STOP_NOCHANGE, PGA_REPORT_STRING, \
-                PGA_POPREPL_RTR
+from math import log
+from pga  import PGA, PGA_STOP_MAXITER, PGA_STOP_NOCHANGE \
+          , PGA_REPORT_STRING, PGA_POPREPL_RTR
 from rsclib.autosuper import autosuper
+
+invlog2 = 1.0 / log (2)
+def log2 (x) :
+    return log (x) * invlog2
 
 class SGA (PGA, autosuper) :
     """ Simple Genetic Algorithm
