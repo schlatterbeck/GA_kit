@@ -29,6 +29,7 @@ class SGA (PGA, autosuper) :
         , mutation_prob       = 0.0
         , max_GA_iter         = 1000
         ) :
+        print ("Random seed: %s" % random_seed)
         PGA.__init__ \
             ( self, bool
             , length

@@ -3,9 +3,10 @@ from pga import PGA, PGA_STOP_MAXITER, PGA_REPORT_STRING, PGA_POPREPL_RTR
 from pga import PGA_OLDPOP
 from rsclib.autosuper import autosuper
 from argparse import ArgumentParser
+from sga  import SGA
 from ecga import ECGA
 
-class Deceptive (ECGA, autosuper) :
+class Deceptive (autosuper) :
 
     fun = ((3, 1),)
     def __init__ \
@@ -23,9 +24,8 @@ class Deceptive (ECGA, autosuper) :
         length  = 0
         for k, n in self.fun :
             length += k * n
-        ECGA.__init__ \
-            ( self
-            , length
+        self.__super.__init__ \
+            ( length
             , maximize            = True
             , pop_size            = popsize
             , num_replace         = popsize
@@ -84,8 +84,21 @@ class Deceptive (ECGA, autosuper) :
 
 # end class Deceptive
 
+class Dec_SGA (Deceptive, SGA) :
+    pass
+
+class Dec_ECGA (Deceptive, ECGA) :
+    pass
+
 def main () :
     cmd = ArgumentParser ()
+    classes = ('SGA', 'ECGA')
+    cmd.add_argument \
+        ( '-c', '--class'
+        , dest    = 'cls'
+        , help    = "Class to use, one of %s, default=%%(default)s" % (classes,)
+        , default = 'SGA'
+        )
     cmd.add_argument \
         ( '-d', '--deceptive-function'
         , help    = "Add deceptive function with length/count"
@@ -123,7 +136,9 @@ def main () :
     else :
         deceptive_function = ((5, 20),)
 
-    d = Deceptive \
+    cls = globals () ['Dec_' + args.cls]
+
+    d = cls \
         ( deceptive_function
         , popsize     = args.popsize
         , random_seed = args.random_seed
