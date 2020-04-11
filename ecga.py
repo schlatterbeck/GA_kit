@@ -9,44 +9,6 @@ log2 = log (2)
 
 class ECGA (PMBGA) :
     """ Extended Compacat Genetic Algorithm
-        The ECGA, originally proposed in [1] replaces the mutation and
-        crossover of a genetic algorithm by building and later sampling
-        a statistical model of the population in each generation. The
-        model uses a minimum description length (MDL) model. A better
-        description with an example is found in [2].
-        Note that we're using the restricted tournament replacement,
-        originally called restricted tournament selection by Harik
-        [4,5] and later named restricted tournament replacement by
-        Pelikan [6] for population replacement which has recently been
-        implemented in the genetic algorithm library PGApack.
-        Note that currently we support only bitstring (bool) genes.
-        Since we're using model building not the standard GA operations,
-        we disable mutation by setting the mutation probability to 0.
-
-        [1] George R. Harik. Linkage learning via probabilistic modeling in
-            the ECGA. IlliGAL Report 99010, Illinois Genetic Algorithm
-            Lab, January 1999
-        [2] Georges R. Harik, Fernando G. Lobo, and Kumara Sastry.
-            Linkage learning via probabilistic modeling in the extended
-            compact genetic algorithm (ECGA). In Pelikan et al. [3],
-            pages 39-61.
-        [3] Martin Pelikan, Kumara Sastry, and Erick Cantu-Paz, editors.
-            Scalable Optimization via Probabilistic Modelling: From
-            Algorithms to Applications, volume 33 of Studies in
-            Computational Intelligence. Springer, 2006.
-        [4] Georges R. Harik. Finding multiple solutions in problems of
-            bounded difficulty. IlliGAL Report 94002, Illinois Genetic
-            Algorithm Lab, May 1994.
-        [5] Georges R. Harik. Finding multimodal solutions using
-            restricted tournament selection. In Eshelman [6], pages
-            24-31.
-        [6] Larry J. Eshelman, editor. Proceedings of the International
-            Conference on Genetic Algorithms (ICGA). Morgan Kaufmann
-            July 1995.
-        [7] Martin Pelikan. Hierarchical Bayesian Optimization
-            Algorithm: Toward a New Generation of Evolutionary
-            Algorithms, volume 170 of Studies in Fuzziness and Soft
-            Computing. Springer, 2005.
     """
 
     def build_model (self, p_pop) :
