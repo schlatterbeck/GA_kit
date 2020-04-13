@@ -286,18 +286,36 @@ class HBOA (PMBGA) :
         return self.l_gamma [x]
     # end def lgamma
 
+    def _sample_node (self, node, p, pop, d) :
+        dn = node.dnode
+        while not isinstance (dn, DLeaf) :
+            dn = dn.children [d [dn.idx]]
+        assert dn.idx == node.idx
+        bit = self.random_flip (dn.p)
+        d [dn.idx] = bit
+        self.set_allele (p, pop, dn.idx, bit)
+        for c in node.children :
+            if c.idx in d :
+                continue
+            for parent in c.parents :
+                if parent.idx not in d :
+                    break
+            else :
+                self._sample_node (c, p, pop, d)
+    # end def _sample_node
+
     def sample_individual (self, p, pop) :
         d = {}
         for r in self.roots :
-            c = r.dnode
-            assert isinstance (c, DLeaf)
+            self._sample_node (r, p, pop, d)
+        assert len (d) == len (self)
     # end def sample_model
 
     def post_init (self) :
         self.__super.post_init ()
         self.do_debug = False
         self.clear_cache ()
-        self.l2n2 = log2 (len (self)) / 2.0
+        self.l2n2 = log2 (self.pop_size) / 2.0
         self.l_gamma = [0]
         for k in range (self.pop_size + 2) :
             self.l_gamma.append (lgamma (k + 1))
