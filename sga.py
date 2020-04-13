@@ -71,6 +71,17 @@ class PMBGA (SGA) :
         self.file     = sys.stdout
     # end def post_init
 
+    def build_model (self, p_pop) :
+        self.genes = []
+        for p in self.parents :
+            g = []
+            self.genes.append (g)
+            for idx in range (len (self)) :
+                g.append (self.get_allele (p, p_pop, idx))
+        if getattr (self.__super, 'build_model', None) :
+            self.__super.build_model (p_pop)
+    # end def build_model
+
     def crossover (self, p1, p2, p_pop, c1, c2, c_pop) :
         """ Perform crossover from p1, p2 into c1, c2.
             Note that we do not actually perform crossover. We build a
@@ -105,5 +116,15 @@ class PMBGA (SGA) :
         self.__super.print_string (file, p, pop)
         self.file = f
     # end def print_string
+
+    def sample_model (self, c1, c2, c_pop) :
+        for i in range (self.pop_size) :
+            p = i
+            if i == self.pop_size - 1 :
+                p = c1
+            elif i == self.pop_size - 2 :
+                p = c2
+            self.sample_individual (p, c_pop)
+    # end def sample_model
 
 # end def PMBGA

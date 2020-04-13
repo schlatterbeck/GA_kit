@@ -4,21 +4,19 @@ from __future__ import print_function
 from math import log
 from sga import PMBGA, log2
 
+def pkey (partition) :
+    return (-len (partition), partition [0])
+
 class ECGA (PMBGA) :
     """ Extended Compacat Genetic Algorithm
     """
 
     def build_model (self, p_pop) :
-        self.genes = []
-        for p in self.parents :
-            g = []
-            self.genes.append (g)
-            for idx in range (len (self)) :
-                g.append (self.get_allele (p, p_pop, idx))
+        self.__super.build_model (p_pop)
         self.partitions = dict (((i,), 1) for i in range (len (self)))
         self.candidates = {}
-        for part1 in self.partitions :
-            for part2 in self.partitions :
+        for part1 in sorted (self.partitions) :
+            for part2 in sorted (self.partitions) :
                 if part1 == part2 :
                     continue
                 self.candidates [part1 + part2] = [part1, part2]
@@ -26,7 +24,7 @@ class ECGA (PMBGA) :
             m = 0
             k = None
             keys = tuple (self.candidates.keys ())
-            for c in keys :
+            for c in sorted (keys) :
                 c1, c2 = self.candidates [c]
                 d = self.mpm (c1) + self.mpm (c2) - self.mpm (c)
                 if d > 0 :
@@ -43,7 +41,7 @@ class ECGA (PMBGA) :
                 for c in keys :
                     if c1 in self.candidates [c] or c2 in self.candidates [c] :
                         self.delete (c)
-                for p in self.partitions :
+                for p in sorted (self.partitions) :
                     self.candidates [p + k] = [p, k]
                 self.partitions [k] = 1
             else :
@@ -70,7 +68,7 @@ class ECGA (PMBGA) :
         d = {}
         for g in self.genes :
             key = []
-            for k in partition :
+            for k in sorted (partition) :
                 key.append (g [k])
             key = tuple (key)
             if key not in d :
@@ -78,7 +76,7 @@ class ECGA (PMBGA) :
             d [key] += 1
         l = len (self.genes)
         p = []
-        for k in d :
+        for k in sorted (d) :
             d [k] = d [k] / l
             p.append (d [k])
         self._probab_cache [partition] = d
@@ -97,25 +95,19 @@ class ECGA (PMBGA) :
         return (2.0 ** len (partition) - 1.0) * self.log2n1
     # end def repr_size
 
-    def sample_model (self, c1, c2, c_pop) :
-        for i in range (self.pop_size) :
-            p = i
-            if i == self.pop_size - 1 :
-                p = c1
-            elif i == self.pop_size - 2 :
-                p = c2
-            for part in self.partitions :
-                r = self.random01 ()
-                psum = 0.0
-                for k in sorted (self._probab_cache [part].keys ()) :
-                    psum += self._probab_cache [part][k]
-                    if psum >= r :
-                        for idx, bit in zip (part, k) :
-                            self.set_allele (p, c_pop, idx, bit) 
-                        break
-                else :
-                    assert False
-            #self.print_string (self.file, p, c_pop)
+    def sample_individual (self, p, pop) :
+        for part in sorted (self.partitions) :
+            r = self.random01 ()
+            psum = 0.0
+            for k in sorted (self._probab_cache [part].keys ()) :
+                psum += self._probab_cache [part][k]
+                if psum >= r :
+                    for idx, bit in zip (part, k) :
+                        self.set_allele (p, pop, idx, bit)
+                    break
+            else :
+                assert False
+        #self.print_string (self.file, p, c_pop)
     # end def sample_model
 
     def post_init (self) :
@@ -125,7 +117,7 @@ class ECGA (PMBGA) :
     # end def post_init
 
     def print_model (self) :
-        for part in self.partitions :
+        for part in sorted (self.partitions, key = pkey) :
             print (list (part), end = ' ', file = self.file)
         print (file = self.file)
     # end def print_model
