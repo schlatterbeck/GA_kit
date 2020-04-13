@@ -5,6 +5,7 @@ from rsclib.autosuper import autosuper
 from argparse import ArgumentParser
 from sga  import SGA
 from ecga import ECGA
+from hboa import HBOA
 
 class Deceptive (autosuper) :
 
@@ -90,9 +91,12 @@ class Dec_SGA (Deceptive, SGA) :
 class Dec_ECGA (Deceptive, ECGA) :
     pass
 
+class Dec_HBOA (Deceptive, HBOA) :
+    pass
+
 def main () :
     cmd = ArgumentParser ()
-    classes = ('SGA', 'ECGA')
+    classes = ('SGA', 'ECGA', 'HBOA')
     cmd.add_argument \
         ( '-c', '--class'
         , dest    = 'cls'
