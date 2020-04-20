@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from __future__ import print_function
 from pga import PGA, PGA_STOP_MAXITER, PGA_REPORT_STRING, PGA_POPREPL_RTR
 from pga import PGA_OLDPOP
@@ -12,11 +13,13 @@ class Deceptive (autosuper) :
     fun = ((3, 1),)
     def __init__ \
         ( self
-        , fun         = fun
-        , shuffle     = False
-        , random_seed = 42
-        , popsize     = 1000
-        , maxiter     = 1000
+        , fun             = fun
+        , shuffle         = False
+        , random_seed     = 42
+        , popsize         = 1000
+        , maxiter         = 1000
+        , tournament_size = 2
+        , rtr_window_size = 0
         ) :
         self.random_seed = random_seed
         self.fun         = fun
@@ -36,6 +39,8 @@ class Deceptive (autosuper) :
             , pop_replace_type    = PGA_POPREPL_RTR
             , print_frequency     = 10
             , max_GA_iter         = maxiter
+            , tournament_size     = tournament_size
+            , rtr_window_size     = rtr_window_size
             )
 
         indexes = list (range (len (self)))
@@ -121,6 +126,19 @@ def main () :
         , default = 1000
         )
     cmd.add_argument \
+        ( '--rtr-window-size'
+        , type    = int
+        , help    = "Window-size for RTR"
+        , default = 0
+        )
+    cmd.add_argument \
+        ( '--tournament-size'
+        , type    = int
+        , help    = "Number of participant in tournament selection, "
+                    "default= %(default)s"
+        , default = 2
+        )
+    cmd.add_argument \
         ( '-s', '--shuffle'
         , help    = "Shuffle genes of deceptive functions"
         , action  = "store_true"
@@ -144,10 +162,12 @@ def main () :
 
     d = cls \
         ( deceptive_function
-        , popsize     = args.popsize
-        , random_seed = args.random_seed
-        , maxiter     = args.maxiter
-        , shuffle     = args.shuffle
+        , popsize         = args.popsize
+        , random_seed     = args.random_seed
+        , maxiter         = args.maxiter
+        , shuffle         = args.shuffle
+        , rtr_window_size = args.rtr_window_size
+        , tournament_size = args.tournament_size
         )
     d.run ()
 # end def main

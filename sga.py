@@ -28,8 +28,12 @@ class SGA (PGA, autosuper) :
         , print_frequency     = 10
         , mutation_prob       = 0.0
         , max_GA_iter         = 1000
+        , rtr_window_size     = 0
+        , tournament_size     = 2
         ) :
         print ("Random seed: %s" % random_seed)
+        if not rtr_window_size :
+            rtr_window_size = int (min (pop_size * 0.2, length))
         PGA.__init__ \
             ( self, bool
             , length
@@ -44,6 +48,8 @@ class SGA (PGA, autosuper) :
             , max_GA_iter         = max_GA_iter
             , mutation_prob       = mutation_prob
             , crossover_prob      = 1.0
+            , rtr_window_size     = rtr_window_size
+            , tournament_size     = tournament_size
             )
         self.post_init ()
     # end def __init__
