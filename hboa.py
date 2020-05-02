@@ -41,11 +41,7 @@ class Bayesian_Network (object) :
             cidx    = -1
             for node in self.nodes :
                 for l in node.leaves () :
-                    keys = list (l.candidates.keys ())
-                    #for c in l.candidate_iter () :
-                    for k in keys :
-                        c = l.candidates [k]
-                        assert c.idx == k
+                    for c in l.candidate_iter () :
                         if c.feasible () :
                             if c.gain > maxgain :
                                 maxgain = c.gain
@@ -53,10 +49,9 @@ class Bayesian_Network (object) :
                                 cidx    = c.idx
                             # Since candidates are returned best-first
                             # we can stop after the first found
-                            #break
+                            break
                         else :
-                            del l.candidates [k]
-                            #l.del_candidate (c)
+                            l.del_candidate (c)
             if maxgain <= 0 :
                 break
             if self.verbose :
@@ -152,11 +147,16 @@ class BNode (object) :
                         yield (cx)
     # end def leaves
 
-    def is_transitive_parent (self, node) :
+    def is_transitive_parent (self, node, visited = None) :
+        if visited is None :
+            visited = {}
         for c in self.children :
+            if c in visited :
+                continue
+            visited [c] = 1
             if node is c :
                 return True
-            if c.is_transitive_parent (node) :
+            if c.is_transitive_parent (node, visited) :
                 return True
         return False
     # end def is_transitive_parent
