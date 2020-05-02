@@ -20,10 +20,18 @@ class Deceptive (autosuper) :
         , maxiter         = 1000
         , tournament_size = 2
         , rtr_window_size = 0
+        , s_penalty       = 2.0
+        , min_split       = 0
+        , max_parent      = 0
         ) :
-        self.random_seed = random_seed
-        self.fun         = fun
-        self.shuffle     = shuffle
+        self.random_seed     = random_seed
+        self.fun             = fun
+        self.shuffle         = shuffle
+        self.s_penalty       = s_penalty
+        self.min_split       = min_split
+        self.max_parent      = max_parent
+        self.tournament_size = tournament_size
+        self.rtr_window_size = rtr_window_size
         stop_on = [PGA_STOP_MAXITER]
         length  = 0
         for k, n in self.fun :
@@ -58,7 +66,15 @@ class Deceptive (autosuper) :
                 for b in range (bits) :
                     a.append (indexes [idx])
                     idx += 1
-        #print (self.funidx)
+        print ("Optimizing:")
+        print ("Random seed:     %s" % random_seed)
+        print ("Population size: %s" % popsize)
+        print ("Tournament size: %s" % tournament_size)
+        print ("RTR window size: %s" % rtr_window_size)
+        if isinstance (self, HBOA) :
+            print ("HBOA S-Penalty:  %s" % s_penalty)
+            print ("HBOA Min-Split:  %s" % min_split)
+        print ("Functions:", self.funidx)
         self.maxeval = 0.0
         for idxes in self.funidx :
             self.maxeval += len (idxes)
@@ -66,13 +82,13 @@ class Deceptive (autosuper) :
 
     def stop_cond (self) :
         best = self.get_best_index (PGA_OLDPOP)
-        eval = self.evaluate (best, PGA_OLDPOP)
+        eval = self.evaluate (best, PGA_OLDPOP, count_eval = False)
         if eval >= self.maxeval :
             return True
         return self.check_stopping_conditions ()
     # end def stop_cond
 
-    def evaluate (self, p, pop) :
+    def evaluate (self, p, pop, count_eval = True) :
         eval = 0.0
         for indexes in self.funidx :
             l = len (indexes)
@@ -85,6 +101,8 @@ class Deceptive (autosuper) :
                 eval += l
             else :
                 eval += v - 1.0
+        if count_eval :
+            self.eval_counter += 1
         return eval
     # end def evaluate
 
@@ -120,6 +138,20 @@ def main () :
         , default = 1000
         )
     cmd.add_argument \
+        ( '--max-parent'
+        , type    = int
+        , help    = "Maximum number of parents or 0 for no maximum, "
+                    "default:%(default)s, only used for HBOA"
+        , default = 0
+        )
+    cmd.add_argument \
+        ( '--min-split'
+        , type    = int
+        , help    = "Minimum number of samples for split, default:%(default)s, "
+                    "only used for HBOA"
+        , default = 0
+        )
+    cmd.add_argument \
         ( '-p', '--popsize'
         , type    = int
         , help    = "Population size, default=%(default)s"
@@ -130,6 +162,13 @@ def main () :
         , type    = int
         , help    = "Window-size for RTR"
         , default = 0
+        )
+    cmd.add_argument \
+        ( '--s-penalty'
+        , type    = float
+        , help    = "Penalty to apply to the cutoff, default: tournament-size, "
+                    "only used for HBOA"
+        , default = 0.0
         )
     cmd.add_argument \
         ( '--tournament-size'
@@ -159,6 +198,8 @@ def main () :
         deceptive_function = ((5, 20),)
 
     cls = globals () ['Dec_' + args.cls]
+    if not args.s_penalty :
+        args.s_penalty = float (args.tournament_size)
 
     d = cls \
         ( deceptive_function
@@ -168,6 +209,9 @@ def main () :
         , shuffle         = args.shuffle
         , rtr_window_size = args.rtr_window_size
         , tournament_size = args.tournament_size
+        , s_penalty       = args.s_penalty
+        , min_split       = args.min_split
+        , max_parent      = args.max_parent
         )
     d.run ()
 # end def main

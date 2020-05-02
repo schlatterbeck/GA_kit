@@ -8,11 +8,12 @@ class Bayesian_Network (object) :
 
     def __init__ \
         ( self, hboa, genes
-        , lgamma    = lgamma
-        , do_debug  = 0
-        , verbose   = 0
-        , maxparent = 0
-        , min_n     = 30 # do not split below that number
+        , lgamma     = lgamma
+        , do_debug   = 0
+        , verbose    = 0
+        , max_parent = 0
+        , min_split  = 0   # do not split below that number
+        , s_penalty  = 2.0 # Should be the tournament size
         ) :
         self.hboa      = hboa
         self.nodecount = len (genes [0])
@@ -20,13 +21,12 @@ class Bayesian_Network (object) :
         self.genes     = genes
         self.nodes     = {}
         self.roots     = {}
-        self.cutoff    = log2 (self.n) / 2.0
-        self.cutoff    = log2 (self.n)
+        self.cutoff    = log2 (self.n) / 2.0 * s_penalty
         self.do_debug  = do_debug
         self.verbose   = verbose
         self.lgamma    = lgamma
-        self.maxparent = maxparent
-        self.min_n     = min_n
+        self.maxparent = max_parent
+        self.min_split = min_split
         for bitidx in range (self.nodecount) :
             node = BNode (self, bitidx)
             self.nodes [node] = 1
@@ -260,7 +260,7 @@ class DLeaf (object) :
         self.candidates = {}
         self.by_gain    = None
         self.debug      = self.bnode.debug
-        self.min_n      = self.bnode.net.min_n
+        self.min_split  = self.bnode.net.min_split
         self.n  = 0
         self.n1 = 0
         for g in self.genes :
@@ -310,7 +310,7 @@ class DLeaf (object) :
     def try_add_candidate (self, bnode) :
         """ Try split on bnode
         """
-        if self.n < self.min_n :
+        if self.n < self.min_split :
             return 0.0
         idx = bnode.idx
         assert idx not in self.candidates
@@ -359,7 +359,12 @@ class HBOA (PMBGA) :
 
     def build_model (self, p_pop) :
         self.__super.build_model (p_pop)
-        self.net = Bayesian_Network (self, self.genes, lgamma = self.lgamma)
+        self.net = Bayesian_Network \
+            ( self, self.genes, lgamma = self.lgamma
+            , s_penalty  = self.s_penalty
+            , min_split  = self.min_split
+            , max_parent = self.max_parent
+            )
     # end def build_model
 
     def clear_cache (self) :

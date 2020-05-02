@@ -30,8 +30,8 @@ class SGA (PGA, autosuper) :
         , max_GA_iter         = 1000
         , rtr_window_size     = 0
         , tournament_size     = 2
+        , ** kw
         ) :
-        print ("Random seed: %s" % random_seed)
         if not rtr_window_size :
             rtr_window_size = int (min (pop_size * 0.2, length))
         PGA.__init__ \
@@ -52,11 +52,18 @@ class SGA (PGA, autosuper) :
             , tournament_size     = tournament_size
             )
         self.post_init ()
+        self.eval_counter = 0
     # end def __init__
 
     def post_init (self) :
         pass
     # end def post_init
+
+    def print_string (self, file, p, pop) :
+        self.__super.print_string (file, p, pop)
+        print ("\nEvaluations: ", self.eval_counter, file = file)
+        file.flush ()
+    # end def print_string
 
 # end class SGA
 
