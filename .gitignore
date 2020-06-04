@@ -2,4 +2,8 @@
 *.pyo
 *.html
 *.txt
+build
+dist
+experimental
 __pycache__
+Version.py

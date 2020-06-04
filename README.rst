@@ -1,6 +1,6 @@
-+++++++++++++++++++++++++++
-Advanced Genetic Algorithms
-+++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++
+Advanced Genetic Algorithm Toolkit
+++++++++++++++++++++++++++++++++++
 
 This package implements some of the advanced algorithms on top of my
 python wrapper ``pgapy`` of the Parallel Genetic Algorithm Package
@@ -15,6 +15,9 @@ this implementation by studying the documentation of pgapy_ and the user
 guide of PGAPack_ (which comes bundled with an installation of pgapy_).
 In addition looking into the implementation of the deceptive function it
 becomes clear how to code your own problem.
+
+The package is meant as a toolkit where you can mix and match various
+advanced GA algorithms.
 
 Deceptive Functions
 ===================
