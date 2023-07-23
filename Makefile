@@ -5,27 +5,24 @@
 ifeq (,${RELEASETOOLS})
     RELEASETOOLS=../releasetools
 endif
-PKG=advanced-GA
-PY=sga.py ecga.py hboa.py deceptive.py
+PKG=GA_kit
+PY=$(PKG)/sga.py $(PKG)/ecga.py $(PKG)/hboa.py $(PKG)/deceptive.py
 README=README.rst
 SRC=Makefile MANIFEST.in setup.py $(README) README.html $(PY)
 
-VERSIONPY=Version.py
+VERSIONPY=$(PKG)/Version.py
 VERSION=$(VERSIONPY)
 LASTRELEASE:=$(shell $(RELEASETOOLS)/lastrelease -n)
 
 USERNAME=schlatterbeck
-PROJECT=advanced-GA
+PROJECT=GA_kit
 PACKAGE=${PKG}
 
 all: $(VERSION)
 
 $(VERSION): $(SRC)
 
-dist: all
-	python setup.py sdist --formats=gztar,zip
-
 clean:
 	rm -rf default.css Version.py Version.pyc ${CLEAN}
 
-include $(RELEASETOOLS)/Makefile-sf
+include $(RELEASETOOLS)/Makefile-pyrelease

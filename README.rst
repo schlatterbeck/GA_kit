@@ -3,8 +3,8 @@ Advanced Genetic Algorithm Toolkit
 ++++++++++++++++++++++++++++++++++
 
 This package implements some of the advanced algorithms on top of my
-python wrapper ``pgapy`` of the Parallel Genetic Algorithm Package
-PGAPack. In the following we're using GA to mean genetic algorithm.
+python wrapper pgapy_ of the Parallel Genetic Algorithm Package
+PGAPack_. In the following we're using GA to mean genetic algorithm.
 
 Currently we cover two variants of probabilistic model building GAs,
 also called Estimation of Distribution Algorithm (EDA) by other authors.
@@ -168,3 +168,7 @@ when the number of samples affected is below the threshold given by the
 
 .. _PGApy: https://github.com/schlatterbeck/pgapy
 .. _PGApack: https://github.com/schlatterbeck/pgapack
+
+Version 0.2: Updated initial release
+
+- Switch to pyproject.toml
