@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Copyright (C) 2020 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2020-23 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # ****************************************************************************
@@ -30,7 +30,7 @@
 
 from __future__ import print_function
 from math import log
-from sga import PMBGA, log2
+from .sga import PMBGA, log2
 
 def pkey (partition) :
     return (-len (partition), partition [0])

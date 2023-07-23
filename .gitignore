@@ -7,3 +7,6 @@ dist
 experimental
 __pycache__
 Version.py
+GA_kit.egg-info
+announce_pypi
+upload_pypi

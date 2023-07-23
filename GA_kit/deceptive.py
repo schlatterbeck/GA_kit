@@ -33,9 +33,9 @@ from pga import PGA, PGA_STOP_MAXITER, PGA_REPORT_STRING, PGA_POPREPL_RTR
 from pga import PGA_OLDPOP
 from rsclib.autosuper import autosuper
 from argparse import ArgumentParser
-from sga  import SGA
-from ecga import ECGA
-from hboa import HBOA
+from .sga  import SGA
+from .ecga import ECGA
+from .hboa import HBOA
 
 class Deceptive (autosuper) :
 
@@ -53,14 +53,11 @@ class Deceptive (autosuper) :
         , min_split       = 0
         , max_parent      = 0
         ) :
-        self.random_seed     = random_seed
         self.fun             = fun
         self.shuffle         = shuffle
         self.s_penalty       = s_penalty
         self.min_split       = min_split
         self.max_parent      = max_parent
-        self.tournament_size = tournament_size
-        self.rtr_window_size = rtr_window_size
         stop_on = [PGA_STOP_MAXITER]
         length  = 0
         for k, n in self.fun :
@@ -70,7 +67,7 @@ class Deceptive (autosuper) :
             , maximize            = True
             , pop_size            = popsize
             , num_replace         = popsize
-            , random_seed         = self.random_seed
+            , random_seed         = random_seed
             , print_options       = [PGA_REPORT_STRING]
             , stopping_rule_types = stop_on
             , pop_replace_type    = PGA_POPREPL_RTR
