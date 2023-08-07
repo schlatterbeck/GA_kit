@@ -65,4 +65,4 @@ classifiers     = [
 ga-kit-test-deceptive = 'GA_kit.deceptive:main'
 
 [tool.setuptools.dynamic]
-version = {attr = "GA_kit.Version.VERSION"}
+version = {attr = "GA_kit.__version__"}

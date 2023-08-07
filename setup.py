@@ -28,17 +28,10 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ****************************************************************************
 
-from warnings       import filterwarnings
-from distutils.core import setup
-try :
-    from Version import VERSION
-except :
-    VERSION = None
-
-filterwarnings \
-    ( "ignore"
-    , "Unknown distribution option: 'install_requires'"
-    )
+import sys
+from setuptools import setup
+sys.path.insert (1, '.')
+from GA_kit     import __version__
 
 with open ('README.rst') as f :
     description = f.read ()
@@ -47,7 +40,7 @@ license = 'BSD License'
 
 setup \
     ( name             = "GA_kit"
-    , version          = VERSION
+    , version          = __version__
     , description      = "Advanced Genetic Algorithm Toolkit"
     , long_description = description
     , license          = license

@@ -23,6 +23,7 @@ all: $(VERSION)
 $(VERSION): $(SRC)
 
 clean:
-	rm -rf default.css Version.py Version.pyc ${CLEAN}
+	rm -rf default.css GA_kit/Version.py GA_kit/Version.pyc ${CLEAN} \
+	    GA_kit/__pycache__
 
 include $(RELEASETOOLS)/Makefile-pyrelease
